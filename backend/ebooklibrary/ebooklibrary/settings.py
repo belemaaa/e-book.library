@@ -41,6 +41,7 @@ INSTALLED_APPS = [
     'api',
     'restframework',
     'restframework.authtoken'
+    'cloudinary',
 ]
 
 MIDDLEWARE = [
