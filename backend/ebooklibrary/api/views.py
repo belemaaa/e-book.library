@@ -30,8 +30,30 @@ class Member_signup(APIView):
             return Response({'status': 'success', 'message': 'new user has been created.'}, status=status.HTTP_200_OK)
         return Response({'message': 'an error occurred.', 'error': serializer.errors}, status=status.HTTP_400_BAD_REQUEST)
 
-class Member_signup(APIView):
+class Member_Login(APIView):
     authentication_classes = []
     permission_classes = []
     def post(self, request):
-        pass
+        serializer = serializers.MemberLoginSerializer(data=request.data)
+        if serializer.is_valid(raise_exception=False):
+            validated_data = serializer.validated_data
+            try:
+                member = models.Member.objects.get(username=validated_data.get('username'))
+            except models.Member.DoesNotExist:
+                member = None
+            if member is not None and check_password(validated_data.get('password'), member.password):
+                token, created = Token.objects.get_or_create(user=member)
+                return Response({
+                    'status': 'success',
+                    'access_token': token.key,
+                    'user': {
+                        'id': member.id,
+                        'username': member.username,
+                        'email': member.email,
+                        'phone_number': member.phone_number
+                    }
+                }, status=status.HTTP_200_OK) 
+            return Response({
+                'status': 'Failed request', 'message': 'invalid credentals'}, status=status.HTTP_401_UNAUTHORIZED)
+        return Response({'message': 'an error occurred', 'error': serializer.errors}, status=status.HTTP_400_BAD_REQUEST)
+            
