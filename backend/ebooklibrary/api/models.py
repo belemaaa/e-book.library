@@ -5,4 +5,3 @@ from cloudinary.models import CloudinaryField
 
 class Member(AbstractUser):
     profile_image = CloudinaryField('image', folder='', blank=True, null=True)
-

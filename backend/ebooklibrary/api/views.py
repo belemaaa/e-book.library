@@ -12,6 +12,8 @@ from django.db.models import Q
 from . import serializers
 
 class Member_signup(APIView):
+    authentication_classes = []
+    permission_classes = []
     def post(self, request):
         serializer = serializers.MemberSignupSerializer(data=request.data)
         if serializer.is_valid(raise_exception=False):
@@ -27,3 +29,9 @@ class Member_signup(APIView):
             serializer.save(password=hashed_password)
             return Response({'status': 'success', 'message': 'new user has been created.'}, status=status.HTTP_200_OK)
         return Response({'message': 'an error occurred.', 'error': serializer.errors}, status=status.HTTP_400_BAD_REQUEST)
+
+class Member_signup(APIView):
+    authentication_classes = []
+    permission_classes = []
+    def post(self, request):
+        pass
